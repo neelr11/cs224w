@@ -73,8 +73,11 @@ def read_data():
     chord_set_by_song = []
 
 
-    datadir = 'data/song_chords/Rock/'
+    datadir = '../data/song_chords/Rock/'
     for file in os.listdir(datadir):
+        song_edges = []
+        song_chords = set()
+
         if file == ".DS_Store":
             continue
         key = None
@@ -96,17 +99,24 @@ def read_data():
 
             chord_set.add(chord1)
             chord_set.add(chord2)
+            song_chords.add(chord1)
+            song_chords.add(chord2)
+
 
             if chord1 != chord2:
                 edges.append((chord1, chord2))
+                song_edges.append((chord1, chord2))
+        edges_by_song.append(song_edges)
+        chord_set_by_song.append(song_chords)
 
-    return sorted(chord_set), edges
+
+    return sorted(chord_set), edges, edges_by_song, chord_set_by_song
 
 if __name__=='__main__':
 
-    chord_set, edges = read_data()
+    chord_set, edges, edges_by_song, chord_set_by_song = read_data()
 
-G = snap.PNEANet.New()
+    G = snap.PNEANet.New()
 
     chords_dict = {}
     labels = snap.TIntStrH()
@@ -122,17 +132,21 @@ G = snap.PNEANet.New()
     print 'num edges', len(edges)
     print 'num unique edges', G.GetEdges()
 
-    snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
+    with open('chords_dict_rock.txt', 'w') as file:
+        file.write(json.dumps(chords_dict))
+    snap.SaveEdgeList(G, "../data/genre_graphs/rock_graph/rock_graph.txt", "Save as tab-separated list of edges")
 
-=======
+    # save graphs by song
+    for i in range(len(chord_set_by_song)):
+        G = snap.PNEANet.New()
+        chords = chord_set_by_song[i]
+        edges = edges_by_song[i]
+        for id,c in enumerate(chord_set):
+            G.AddNode(id)
+        for edge in edges:
+            G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
+        snap.SaveEdgeList(G, "../data/song_graphs/rock_graphs/" + str(i) + ".txt", "Save as tab-separated list of edges")
 
-with open('chords_dict.txt', 'w') as file:
-    file.write(json.dumps(chords_dict))
-snap.SaveEdgeList(G, "rock_graph.txt", "Save as tab-separated list of edges")
 
-print 'num chords', G.GetNodes()
-print 'num edges', len(edges)
-print 'num unique edges', G.GetEdges()
 
-#snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
->>>>>>> some ratch analysis
+    #snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)

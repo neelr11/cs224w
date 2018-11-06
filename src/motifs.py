@@ -241,7 +241,7 @@ def count_3_motifs():
         #print motif_counts
         total_config_counts = np.add(total_config_counts, motif_counts)
     print total_real_counts
-    print total_config_counts
+    #print total_config_counts
 
 def count_4_motifs():
     global motif_counts
@@ -257,5 +257,11 @@ def count_4_motifs():
 directed_3 = load_3_subgraphs()
 directed_4 = load_4_subgraphs()
 graphs, dict = load_song_graphs("jazz")
+motif_counts = []
+count_3_motifs()
+
+print ""
+
+graphs, dict = load_song_graphs("rock")
 motif_counts = []
 count_3_motifs()

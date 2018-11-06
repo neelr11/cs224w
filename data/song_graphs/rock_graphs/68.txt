@@ -1,0 +1,36 @@
+# Directed graph: ../data/song_graphs/rock_graphs/68.txt 
+# Save as tab-separated list of edges
+# Nodes: 139 Edges: 32
+# FromNodeId	ToNodeId
+114	44
+44	114
+114	44
+44	17
+17	57
+57	131
+131	90
+90	57
+57	114
+114	44
+44	114
+114	44
+44	13
+13	57
+57	131
+131	90
+90	57
+57	13
+13	57
+57	131
+131	90
+90	57
+57	114
+114	44
+44	114
+114	44
+44	114
+114	44
+44	114
+114	44
+44	114
+114	44
