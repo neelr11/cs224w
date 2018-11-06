@@ -16,7 +16,6 @@ genre_to_id = {
     'Pop': 14,
 }
 
-
 # Gets max 1000 songs
 def get_page_urls(url, genre):
     print("**********")
@@ -29,7 +28,7 @@ def get_page_urls(url, genre):
     numTabs = 0
     tab_urls = []
     for i in range(numPagesToScrape):
-        url = genre_url_prefix+str(genre_to_id['Rock'])+genre_url_suffix
+        url = genre_url_prefix+str(genre_to_id[genre])+genre_url_suffix
         if i > 0: url += "&page=" + str(i+1)
         song_obj = get_page_object(url)
         tabs = song_obj[u'data'][u'data'][u'tabs']

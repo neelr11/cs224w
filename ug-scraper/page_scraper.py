@@ -17,8 +17,8 @@ def get_page_object(url):
         headers = {'User-Agent':'Mozilla/5.0'}
         req = urllib2.Request(url,headers=headers)
         page = urllib2.urlopen( req )
-    except urllib2.HTTPError, e:
-        print ('Parsing Error' + e.fp.read())
+    except (urllib2.HTTPError, urllib2.URLError), e:
+        print ('Parsing Error')
         return song_obj
 
     soup = BeautifulSoup(page, 'html.parser')
@@ -39,5 +39,4 @@ def get_song_object(script_tag_text):
     script_tag_text = script_tag_text.strip()
     script_tag_text = script_tag_text.replace("window.UGAPP.store.page =", "")
     script_tag_text = script_tag_text[:-1]
-    #print script_tag_text.encode('ascii', 'ignore')
     return (json.loads(script_tag_text))
