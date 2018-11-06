@@ -66,6 +66,8 @@ chords_dict3 = {
 def clean_up_chord(token):
   if token == 'c,':
     token = 'c'
+  elif token == 'f:maj1':
+    token = 'f:maj7' # typos
   pattern = '([a-z]*)([\',?!>-]*)([\d.*]*)(.*)'
   result = re.match(pattern, token)
   note, style, duration, remaining = result.group(1,2,3,4)

@@ -48,9 +48,9 @@ def read_data():
 
     return sorted(chord_set), edges
 
-chord_set, edges = read_data()
-
 if __name__=='__main__':
+
+    chord_set, edges = read_data()
 
     G = snap.PNGraph.New()
 

@@ -14,6 +14,20 @@ sharps_to_flats = {
     'A#': 'Bb',
 }
 
+fixings = {
+    'o': 'dim',
+    'M7': 'maj7',
+    'sus': 'sus4',
+    '5+': 'aug',
+    'maj': '',
+    '2': 'sus2',
+    'm7add4': 'm11',
+    'add13': '6',
+    '7-9': '9',
+    '7sus': '7sus4',
+    '+': 'aug',
+}
+
 # convert minor keys to relative major
 def parse_key(key):
     matches = re.search('(.)([#b]?)(m?)', key)
@@ -49,10 +63,10 @@ def parse_chord(chord, key, capo):
 
     key = keys[(keys.index(root_note) + capo - keys.index(key) + 12) % 12]
 
-    return key + everything_else
+    return key + (fixings[everything_else] if everything_else in fixings else everything_else)
 
 def read_data():
-    chord_counter = Counter()
+    chord_set = set()
     edges = []
 
     datadir = 'data/song_chords/Rock/'
@@ -73,33 +87,33 @@ def read_data():
             chord1 = parse_chord(tokens[0], key, capo)
             chord2 = parse_chord(tokens[1], key, capo)
 
-            chord_counter[chord1] += 1
-            chord_counter[chord2] += 1
+            chord_set.add(chord1)
+            chord_set.add(chord2)
 
             if chord1 != chord2:
                 edges.append((chord1, chord2))
 
-    print(chord_counter)
+    return sorted(chord_set), edges
 
-    return sorted(set(chord_counter)), edges
+if __name__=='__main__':
 
-chord_set, edges = read_data()
+    chord_set, edges = read_data()
 
-G = snap.PNGraph.New()
+    G = snap.PNGraph.New()
 
-chords_dict = {}
-labels = snap.TIntStrH()
-for i, c in enumerate(chord_set):
-    labels[i] = c
-    chords_dict[c] = i
-    G.AddNode(i)
+    chords_dict = {}
+    labels = snap.TIntStrH()
+    for i, c in enumerate(chord_set):
+        labels[i] = c
+        chords_dict[c] = i
+        G.AddNode(i)
 
-for edge in edges:
-    G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
+    for edge in edges:
+        G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
 
-print 'num chords', G.GetNodes()
-print 'num edges', len(edges)
-print 'num unique edges', G.GetEdges()
+    print 'num chords', G.GetNodes()
+    print 'num edges', len(edges)
+    print 'num unique edges', G.GetEdges()
 
-snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
+    snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
 
