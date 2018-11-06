@@ -1,4 +1,5 @@
 from load_genre_graphs import load_genre_graphs
+from load_song_graphs import load_song_graphs
 import snap
 from itertools import permutations
 import numpy as np
@@ -228,11 +229,19 @@ def gen_config_model_rewire(graph, iterations=8000):
 
 def count_3_motifs():
     global motif_counts
-    enumerate_subgraph(G_Directed, 0, 3, verbose=False)
-    print motif_counts
-    config_model = gen_config_model_rewire(G_Directed)
-    enumerate_subgraph(config_model, 0, 3, verbose=False)
-    print motif_counts
+    total_real_counts = [0] * len(directed_3)
+    total_config_counts = [0] * len(directed_3)
+
+    for G_Directed in graphs:
+        enumerate_subgraph(G_Directed, 0, 3, verbose=False)
+        total_real_counts = np.add(total_real_counts, motif_counts)
+        #print motif_counts
+        config_model = gen_config_model_rewire(G_Directed)
+        enumerate_subgraph(config_model, 0, 3, verbose=False)
+        #print motif_counts
+        total_config_counts = np.add(total_config_counts, motif_counts)
+    print total_real_counts
+    print total_config_counts
 
 def count_4_motifs():
     global motif_counts
@@ -247,6 +256,6 @@ def count_4_motifs():
 # Motif ecounts only work with G_Directed
 directed_3 = load_3_subgraphs()
 directed_4 = load_4_subgraphs()
-G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs("jazz")
+graphs, dict = load_song_graphs("jazz")
 motif_counts = []
 count_3_motifs()

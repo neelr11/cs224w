@@ -69,6 +69,9 @@ def parse_chord(chord, key, capo):
 def read_data():
     chord_set = set()
     edges = []
+    edges_by_song = []
+    chord_set_by_song = []
+
 
     datadir = 'data/song_chords/Rock/'
     for file in os.listdir(datadir):
