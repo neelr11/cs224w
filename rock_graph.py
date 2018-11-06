@@ -1,6 +1,7 @@
 import re
 import os
 import snap
+import json
 
 from collections import Counter
 
@@ -39,7 +40,7 @@ def parse_key(key):
     elif accidental == 'b':
         tonic += accidental
     key = tonic
-    if minor == 'm':        
+    if minor == 'm':
         major_tonic = keys[(keys.index(tonic) + 3) % 12]
         key = major_tonic
     return key
@@ -55,7 +56,7 @@ def parse_chord(chord, key, capo):
         root_note += accidental
     if '/' in everything_else:
         everything_else = everything_else[:everything_else.index('/')] # leave off bass notes
-    
+
     if capo == 'None':
         capo = 0
     else:
@@ -71,10 +72,13 @@ def read_data():
 
     datadir = 'data/song_chords/Rock/'
     for file in os.listdir(datadir):
+        if file == ".DS_Store":
+            continue
         key = None
         capo = None
         for line in open(datadir+file):
             tokens = line.split()
+            #print tokens
             if 'Key' in tokens[0]:
                 key = parse_key(tokens[0][4:])
                 continue
@@ -99,7 +103,7 @@ if __name__=='__main__':
 
     chord_set, edges = read_data()
 
-    G = snap.PNGraph.New()
+G = snap.PNEANet.New()
 
     chords_dict = {}
     labels = snap.TIntStrH()
@@ -117,3 +121,15 @@ if __name__=='__main__':
 
     snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
 
+=======
+
+with open('chords_dict.txt', 'w') as file:
+    file.write(json.dumps(chords_dict))
+snap.SaveEdgeList(G, "rock_graph.txt", "Save as tab-separated list of edges")
+
+print 'num chords', G.GetNodes()
+print 'num edges', len(edges)
+print 'num unique edges', G.GetEdges()
+
+#snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
+>>>>>>> some ratch analysis
