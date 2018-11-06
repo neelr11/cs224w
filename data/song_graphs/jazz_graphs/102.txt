@@ -1,0 +1,12 @@
+# Directed graph: ../data/song_graphs/jazz_graphs/102.txt 
+# Save as tab-separated list of edges
+# Nodes: 241 Edges: 8
+# FromNodeId	ToNodeId
+89	178
+178	221
+221	89
+89	133
+133	198
+198	89
+89	133
+133	198

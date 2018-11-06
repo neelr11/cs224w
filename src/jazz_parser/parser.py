@@ -261,7 +261,7 @@ def transpose_notes(note_measures, old_key, no_octaves):
 def parse(no_durations=False, no_octaves=False, remove_empties=False, special=False):
 
   songs = []
-  path = './openbook/src/openbook/'
+  path = '../openbook/src/openbook/'
   for filename in os.listdir(path):
     song = Song()
     f = open(path + filename)
