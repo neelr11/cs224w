@@ -11,7 +11,6 @@ genre_url_prefix = 'https://www.ultimate-guitar.com/explore?genres[]='
 genre_url_suffix = '&order=hitstotal_desc&type[]=Chords'
 genre_to_id = {
     'Rock': 4,
-    'Electronic': 16,
     'Country': 49,
     'Pop': 14,
 }

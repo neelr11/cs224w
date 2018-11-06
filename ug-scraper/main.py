@@ -3,10 +3,9 @@ from genre_scraper import get_page_urls
 from song_scraper import scrape_song
 import urllib2
 
-genres = ['Rock', 'Electronic', 'Country', 'Pop']
+genres = ['Rock', 'Country', 'Pop']
 genre_to_id = {
     'Rock': 4,
-    'Electronic': 16,
     'Country': 49,
     'Pop': 14,
 }
@@ -26,7 +25,7 @@ def main(genre, starting_song):
     print("**********************")
     print("Starting genre: %s" % genre)
 
-    song_id_file = open('../data/song_ids.txt', 'w')
+    song_id_file = open('../data/song_ids.txt', 'a')
 
     with open('../data/song_urls/'+genre+'.txt', 'r') as f:
         song_urls = [song_url.strip() for song_url in f.readlines()]
