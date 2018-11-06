@@ -1,0 +1,157 @@
+Here are some policy descision:
+===============================
+
+general:
+========
+- we are using a rich preprocessing/templating system. Reasons are:
+	- we want lilypond to see the minimum information to render the result.
+	- we would like to use the same file as the source for many different lilypond
+	renderings.
+	- we would like to use the same file as the source of many versions of the same tune.
+	- we would like to have only infomation that pertains to the tune to be in the tune
+	file. All the rest should be handled by the framework.
+	Currently we are using pythons Mako.
+- we are not using lilypond includes but rather the preprocessing system for includes because:
+	- we may want to control from the outside what is included and what is not.
+	- we would like to produce, for each tune, a single lilypond file that can be used
+	by an outsider to edit and produce a different output.
+- all includes are root relative.
+	- that way there is no ambiguity.
+	- that way we can easily, on the command line, do tests.
+- "make check_all" should pass with no error. This is currently not part of the build and needs
+	to be checked manually but hopefully in the future it will be.
+
+comments:
+=========
+In the lilypond section comments should start with %% and not one (%). The main reason is to avoid
+the chance of collision with future or current templating systems that may use a single % as a directive.
+
+name of files:
+==============
+If a song is called "Autumn Leaves" it will be in a file called "autumn_leaves.mako".
+- spaces are replaced by underscores.
+- all low case.
+- apostrophes, and any other special punctuation marks, are removed. examples:
+	"Gloria's Step" -> "glorias_step.mako"
+	"Hallelujah I Love Him (Her) So" -> "hallelujah_i_love_him_her_so.mako"
+
+This alteration has the following advantages:
+	- it is deterministic and could be implemented using a three line function in
+	almost any programming language.
+	- it prevents all problems with case sensitive vs case insensitive file systems
+	(this really means brain dead Microsoft systems).
+	- it prevents shell scripting problems because it lacks spaces. Obviously one
+	can circumvent these types of problems using correct escaping or quoting in
+	coding such scripts but I don't see a reason to complicate things when a much
+	simpler solution exists.
+
+meta data:
+==========
+- if a song has more than one poet or composer they will be written without "&" but
+rather as a list of names catenated by ",":
+	attributes['composer']="Cootie Williams, Thelonious Monk"
+rationale: this will enable further processing by python code by splitting the list and understanding who
+	the different composers/poets are.
+
+overall song structure:
+=======================
+- order between parts:
+	first chords.
+	then voice.
+	at the end text.
+- breaks.
+	Use the \myBreak macro at every line end in the chords in the tune do nothing.
+	This may turn to a break or it may not.
+	This lets lilypond dictate the breaks. Only change when lilypond makes bad descisions.
+- bars
+	Don't do any extra special bars (\bar "||" or the like). It just overloads the music.
+	Mark stuff with \myMark "A", \myMark "B" etc for parts but that's it.
+	At the end of the piece put an ending mark (\bar "|."). My convention is to have this mark at the end of the chords and not the tune. It seems that lilypond does not do that by default. (Why? Is that a bug that I should report?!?).
+
+Chords:
+=======
+- should we put bar lines in chords? yes
+	advantages: (selected)
+		It makes the chords easier to read.
+		It makes it very easy to see on the resulting sheet when you didnt time the chords right
+			(bar lines appear where they should not)
+		It makes lilypond give you errors about the timings (which is good).
+		I consider the bar lines as sort of documentation when writing chords.
+	disadvantages:
+		They are not taken into consideration
+		They make the code longer
+		In Jazz tunes the lines (usually 4 chords) are very well defined
+			and the chord layout will be visible from the lines
+			so bar lines are superfluous.
+- if a partial bar starts the tune the chords in it should
+	be marked as 's' and not 'r'. 'r' will cause N.C. to
+	be printed while 's' causes nothing to be printed.
+	Use 'r' only when there is really no chord for that part of the tune (very rare).
+- should we end with a turn around? yes
+	advantages: (selected)
+		- maybe some people don't know how to turn around.
+		- sometime the turn around is not trivial (there are many types of turn around we must remember).
+		- sometime the turn around is not anywhere in the song.
+		- sometime the previous two reasons persist.
+	disadvantages:
+		- sounds bad at the very end of the music (in midi for instance).
+		- musicians know how to do turn arounds.
+		- an example of a turn around is usually available. This is especially
+		true for an AABA song where at least one turn around is always there (between
+		the first and the second A parts).
+- marking of parts ("A", "B") should be done within the chord section.
+	rationale: less clutter and the chords define the structure more than the melody.
+- marking the start of chords, parts, end of parts, start of song, end of song should be done in the chord section.
+	Use: \startChords, \endChords, \startPart, \endPart
+	rationale: less clutter and the chords define the structure more than the melody.
+- use "d:m7" and not "d:min7" (shorter).
+	This is enforced by the style checker.
+- do NOT use repears ( | r1 | ) in chords. If you don't want the chords to repeat there
+	is a better way to do it: write a1*2:7 to have the A7 chord last two bars.
+- use "a:dim7" and not "a:dim" to denote a 4 note diminished chord.
+	Reasons for:
+		It shows dim7 in the sheet which is what books usually do.
+		It allow to distinguish the 4 note chord from the 3 note chord.
+	Reasons against:
+		It looks a bit ugly ("Ao7") on the page.
+		It may not be the right way in lilypond to do it.
+	* I need to rethink this policy (maybe alter the way chords are specified in lilypond).
+- use "a:13" to denote a 13 chord.
+	On the page it will be shown as "a9/add13" which is sort of ok.
+
+Tune:
+=====
+- should be written using the \relative directive.
+	reasons:
+	- jazz tunes rarely jump a lot so this is a good solution for jazz.
+	- less cluter, easier to maintain).
+	- easier to move an octave lower or higher.
+	- easier to transpose.
+- \relative should be to c (middle c).
+	in this method the first note sets the octave for the entire tune.
+	reasons:
+	- all tunes have some relation one to the other and can be compared and transposed in the same way.
+- ties should be written this way "a~ b" or "a~ | b". Meaning that the tie is right
+	next to the note from which the tie eminates with no space.
+	Need to find a rationale for this currently this is just a convention.
+
+Lyrics:
+=======
+- the lyrics should be done under \lyricmode and not \lyrics
+	(I'm not sure why that should be so but it is the current convention).
+- quotations in lyrics
+	you cannot put the quotes in double quotation marks (") since that will cause the
+	lyrics to come out wrong, instead I used single quotation marks (').
+- Lyrics and midi
+	- I did not render the lyrics for midi. It seems that could be beneficial for Karaoke or various other uses. In any case I have yet to see this work right since timidity does not render it well (could be a problem with timidity or maybe a problem with lilyponds rendering of the lyrics for midi...).
+- Song titles in lyrics
+	- When a song's title occurs in the lyrics, the initial letters of each word of the title should be capitalized. For example: "Don't know why there's no sun up in the sky, Stormy Weather,"
+
+Completeness:
+=============
+0 - unknown
+1 - infrastructure (compilation) is ok. Uses my conventions.
+2 - basic info is there. Could look bad.
+3 - at least one component of tune/lyrics/harmony is ok.
+4 - at least two components of tune/lyrics/harmony are ok.
+5 - all three components of tune/lyrics/harmony are ok.
