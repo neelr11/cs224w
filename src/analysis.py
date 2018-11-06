@@ -4,13 +4,13 @@ from matplotlib import pyplot as plt
 from itertools import permutations
 import numpy as np
 
-with open('chords_dict.txt', 'r') as file:
+with open('chords_dict_jazz.txt', 'r') as file:
      dict = (json.load(file))
      chords_dict = {v: k for k, v in dict.iteritems()}
 
-G_Dir = snap.LoadEdgeList(snap.PNGraph, "rock_graph.txt", 0, 1)
-G_Undir = snap.LoadEdgeList(snap.PUNGraph, "rock_graph.txt", 0, 1)
-G = snap.LoadEdgeList(snap.PNEANet, "rock_graph.txt", 0, 1)
+G_Dir = snap.LoadEdgeList(snap.PNGraph, "jazz_graph.txt", 0, 1)
+G_Undir = snap.LoadEdgeList(snap.PUNGraph, "jazz_graph.txt", 0, 1)
+G = snap.LoadEdgeList(snap.PNEANet, "jazz_graph.txt", 0, 1)
 
 print ('Num Nodes %i' % G.GetNodes())
 print ('Num Edges %i' % G.GetEdges())
@@ -34,6 +34,22 @@ for item in PRankH:
     print chords_dict[item], PRankH[item]
 
 
+DegToCntV = snap.TIntPrV()
+snap.GetOutDegCnt(G, DegToCntV)
+
+out_degrees = [item.GetVal1() for item in DegToCntV if item.GetVal1() > 0]
+num_nodes = [item.GetVal2() for item in DegToCntV if item.GetVal1() > 0]
+
+# plt.scatter(out_degrees, num_nodes)
+# plt.xscale('log')
+# plt.yscale('log')
+# axes = plt.gca()
+# axes.set_xlim([min(out_degrees), max(out_degrees)])
+# plt.title('Distribution of out-degrees')
+# plt.ylabel('Number of nodes')
+# plt.xlabel('Out-degree')
+# plt.show()
+
 
 def load_3_subgraphs():
     '''
@@ -41,9 +57,18 @@ def load_3_subgraphs():
     The list is in the same order as the figure in the HW pdf, but it is
     zero-indexed
     '''
-    return [snap.LoadEdgeList(snap.PNGraph, "./subgraphs/{}.txt".format(i), 0, 1) for i in range(13)]
+    return [snap.LoadEdgeList(snap.PNGraph, "./subgraphs_3/{}.txt".format(i), 0, 1) for i in range(13)]
 
-def count_iso(G, sg, verbose=False):
+def load_4_subgraphs():
+    '''
+    Loads a list of all 13 directed 3-subgraphs.
+    The list is in the same order as the figure in the HW pdf, but it is
+    zero-indexed
+    '''
+    return [snap.LoadEdgeList(snap.PNGraph, "./subgraphs_4/{}.txt".format(i), 0, 1) for i in range(7)]
+
+
+def count_iso_3(G, sg, verbose=False):
     '''
     Given a set of 3 node indices in sg, obtains the subgraph from the
     original graph and renumbers the nodes from 0 to 2.
@@ -62,8 +87,37 @@ def count_iso(G, sg, verbose=False):
         nodes.Add(NId)
     # This call requires latest version of snap (4.1.0)
     SG = snap.GetSubGraphRenumber(G, nodes)
+
+    num_iters = len(directed_3)
+
     for i in range(len(directed_3)):
-        if match(directed_3[i], SG):
+        if match(directed_3[i], SG, 3):
+            motif_counts[i] += 1
+
+def count_iso_4(G, sg, verbose=False):
+    '''
+    Given a set of 3 node indices in sg, obtains the subgraph from the
+    original graph and renumbers the nodes from 0 to 2.
+    It then matches this graph with one of the 13 graphs in
+    directed_3.
+    When it finds a match, it increments the motif_counts by 1 in the relevant
+    index
+
+    IMPORTANT: counts are stored in global motif_counts variable.
+    It is reset at the beginning of the enumerate_subgraph method.
+    '''
+    if verbose:
+        print(sg)
+    nodes = snap.TIntV()
+    for NId in sg:
+        nodes.Add(NId)
+    # This call requires latest version of snap (4.1.0)
+    SG = snap.GetSubGraphRenumber(G, nodes)
+
+    num_iters = len(directed_4)
+
+    for i in range(len(directed_4)):
+        if match(directed_4[i], SG, 4):
             motif_counts[i] += 1
 
 
@@ -79,7 +133,10 @@ def enumerate_subgraph(G, iteration, k=3, verbose=False):
     So you get an idea of how long the algorithm needs to run
     '''
     global motif_counts
-    motif_counts = [0]*len(directed_3) # Reset the motif counts (Do not remove)
+    if k == 3:
+        motif_counts = [0]*len(directed_3) # Reset the motif counts (Do not remove)
+    else:
+        motif_counts = [0]*len(directed_4)
     ##########################################################################
     #TODO: Your code here
     nodes_seen = set()
@@ -96,11 +153,11 @@ def enumerate_subgraph(G, iteration, k=3, verbose=False):
         extend_subgraph(G, k, sg, v_ext, curr_nodeId)
         nodes_seen.add(NI.GetId())
 
-        if (len(nodes_seen) % 100 == 0) and verbose:
+        if (len(nodes_seen) % 1 == 0) and verbose:
             print('Iteration %d is %f done' % (iteration,  float(len(nodes_seen))/G.GetNodes()))
 
 
-def match(G1, G2):
+def match(G1, G2, size):
     '''
     This function compares two graphs of size 3 (number of nodes)
     and checks if they are isomorphic.
@@ -114,7 +171,7 @@ def match(G1, G2):
         G = G2
         H = G1
     # Only checks 6 permutations, since k = 3
-    for p in permutations(range(3)):
+    for p in permutations(range(size)):
         edge = G.BegEI()
         matches = True
         while edge < G.EndEI():
@@ -138,7 +195,10 @@ def extend_subgraph(G, k, sg, v_ext, node_id, verbose=False):
     # Base case (you should not need to modify this):
     if len(sg) is k:
         #print sg
-        count_iso(G, sg, verbose)
+        if k == 3:
+            count_iso_3(G, sg, verbose)
+        else:
+            count_iso_4(G, sg, verbose)
         return
     # Recursive step:
     ##########################################################################
@@ -215,13 +275,22 @@ def gen_config_model_rewire(graph, iterations=8000):
     return config_graph, clustering_coeffs
 
 
-directed_3 = load_3_subgraphs()
-motif_counts = [0]*len(directed_3)
-enumerate_subgraph(G_Dir, 0, 3)
-print motif_counts
 
-config_graph, c = gen_config_model_rewire(G_Dir)
-motif_counts = [0]*len(directed_3)
 
-enumerate_subgraph(config_graph, 0, 3)
+
+# directed_3 = load_3_subgraphs()
+# motif_counts = [0]*len(directed_3)
+# enumerate_subgraph(G_Dir, 0, 3)
+# print motif_counts
+#
+# config_graph, c = gen_config_model_rewire(G_Dir)
+# motif_counts = [0]*len(directed_3)
+#
+# enumerate_subgraph(config_graph, 0, 3)
+# print motif_counts
+
+
+directed_4 = load_4_subgraphs()
+motifs_counts = [0]*len(directed_4)
+enumerate_subgraph(G_Dir, 0, k=4, verbose=True)
 print motif_counts

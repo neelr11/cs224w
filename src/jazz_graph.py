@@ -3,6 +3,7 @@ import snap
 from jazz_parser import parser
 from jazz_parser import chord
 from jazz_parser import util
+import json
 
 from collections import Counter
 
@@ -28,7 +29,7 @@ def parse_chord(chord):
         chord = lilypond_to_our_schema[chord]
     return chord
 
-def read_data():  
+def read_data():
     songs = parser.parse(no_durations=True, remove_empties=True, no_octaves=True)
     chord.clean_up_chords(songs)
     chord_songs = util.get_chord_songs(songs)
@@ -64,8 +65,13 @@ if __name__=='__main__':
     for edge in edges:
         G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
 
+    with open('chords_dict_jazz.txt', 'w') as file:
+        file.write(json.dumps(chords_dict))
+    snap.SaveEdgeList(G, "jazz_graph.txt", "Save as tab-separated list of edges")
+
+
     print 'num chords', G.GetNodes()
     print 'num edges', len(edges)
     print 'num unique edges', G.GetEdges()
 
-    snap.DrawGViz(G, snap.gvlNeato, 'jazz.png', 'jazz chords', labels)
+    # snap.DrawGViz(G, snap.gvlNeato, 'jazz.png', 'jazz chords', labels)
