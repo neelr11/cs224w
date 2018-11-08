@@ -144,6 +144,3 @@ if __name__=='__main__':
             G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
         snap.SaveEdgeList(G, "../data/song_graphs/rock_graphs/" + str(i) + ".txt", "Save as tab-separated list of edges")
 
-
-
-    snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
