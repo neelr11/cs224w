@@ -3,8 +3,6 @@ import os
 import snap
 import json
 
-from collections import Counter
-
 keys = ['C','Db','D','Eb','E','F','Gb','G','Ab','A','Bb','B']
 
 sharps_to_flats = {
@@ -71,7 +69,6 @@ def read_data():
     edges = []
     edges_by_song = []
     chord_set_by_song = []
-
 
     datadir = '../data/song_chords/Rock/'
     for file in os.listdir(datadir):
