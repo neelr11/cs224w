@@ -4,6 +4,8 @@ import snap
 import numpy as np
 import matplotlib.pyplot as plt
 
+from load_song_graphs import load_song_graphs
+from load_genre_graphs import load_genre_graphs
 
 # node_degs = []
 # for NI in G.Nodes():
@@ -11,6 +13,15 @@ import matplotlib.pyplot as plt
 
 #     node_degs.append((NI.GetId(), NI.GetDeg()))
 
+G_Multi, G_Directed, G_Undirected, id_to_chord = load_genre_graphs("rock")
+
+print(id_to_chord)
+
+labels = snap.TIntStrH()
+for id in id_to_chord:
+    labels[id] = id_to_chord[id]
+
+snap.DrawGViz(G_Directed, snap.gvlNeato, 'rock.png', 'rock chords', labels)
 
 
 features = np.zeros((G.GetNodes(), 3))

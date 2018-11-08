@@ -146,4 +146,4 @@ if __name__=='__main__':
 
 
 
-    #snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)
+    snap.DrawGViz(G, snap.gvlNeato, 'rock.png', 'rock chords', labels)

@@ -4,11 +4,12 @@ import snap
 
 with open('chords_dict_jazz.txt', 'r') as file:
      dict = (json.load(file))
-     chords_dict_rock = {v: k for k, v in dict.iteritems()}
+     chords_dict_jazz = {v: k for k, v in dict.iteritems()}
+
 
 with open('chords_dict_rock.txt', 'r') as file:
      dict = (json.load(file))
-     chords_dict_jazz = {v: k for k, v in dict.iteritems()}
+     chords_dict_rock = {v: k for k, v in dict.iteritems()}
 
 def load_genre_graphs(graph):
     if graph == "rock":
