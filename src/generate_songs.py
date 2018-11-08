@@ -35,7 +35,7 @@ for genre in ["rock", "jazz"]:
         chord_progression.append(id_to_chord[nodeID])
 
         generated_songs.append(chord_progression)
-        file_name = "generated_" + genre + "_song_" + str(i) + ".txt"
+        file_name = "generated_songs/generated_" + genre + "_song_" + str(i+1) + ".txt"
         snap.SaveEdgeList(G_Directed_i, file_name)
 
     fname = "Generated_" + genre + "_songs.txt"
