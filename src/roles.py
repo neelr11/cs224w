@@ -21,7 +21,7 @@ labels = snap.TIntStrH()
 for id in id_to_chord:
     labels[id] = id_to_chord[id]
 
-snap.DrawGViz(G_Directed, snap.gvlNeato, 'rock.png', 'rock chords', labels)
+# snap.DrawGViz(G_Directed, snap.gvlNeato, 'rock.png', 'rock chords', labels)
 
 
 features = np.zeros((G.GetNodes(), 3))

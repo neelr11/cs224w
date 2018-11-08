@@ -25,6 +25,7 @@ fixings = {
     '7-9': '9',
     '7sus': '7sus4',
     '+': 'aug',
+    'm7b5': 'm7.5-'
 }
 
 # convert minor keys to relative major
@@ -127,7 +128,6 @@ if __name__=='__main__':
 
     print 'num chords', G.GetNodes()
     print 'num edges', len(edges)
-    print 'num unique edges', G.GetEdges()
 
     with open('chords_dict_rock.txt', 'w') as file:
         file.write(json.dumps(chords_dict))

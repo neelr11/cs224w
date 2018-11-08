@@ -79,7 +79,6 @@ if __name__=='__main__':
 
     print 'num chords', G.GetNodes()
     print 'num edges', len(edges)
-    print 'num unique edges', G.GetEdges()
 
     # save graphs by song
     for i in range(len(chord_set_by_song)):
@@ -96,4 +95,4 @@ if __name__=='__main__':
 
 
 
-    # snap.DrawGViz(G, snap.gvlNeato, 'jazz.png', 'jazz chords', labels)
+    snap.DrawGViz(G, snap.gvlNeato, 'jazz.png', 'jazz chords', labels)
