@@ -7,7 +7,9 @@ import matplotlib.pyplot as plt
 from load_song_graphs import load_song_graphs
 from load_genre_graphs import load_genre_graphs
 
-def do_similarity_stuff(genre, comparison_chord, in_nodes, multi):
+# direction is 'in', 'out', or 'both'
+def do_similarity_stuff(genre, comparison_chord, direction, multi):
+
     G_Multi, G_Directed, G_Undirected, id_to_chord = load_genre_graphs(genre)
 
     chord_to_id = {}
@@ -19,13 +21,15 @@ def do_similarity_stuff(genre, comparison_chord, in_nodes, multi):
     features = np.zeros((G.GetNodes(), 3))
 
     for NI in G.Nodes():
+        deg_fns = {'in': NI.GetInDeg, 'out': NI.GetOutDeg, 'both': NI.GetDeg}
+        neighbor_fns = {'in': NI.GetInNId, 'out': NI.GetOutNId, 'both': NI.GetNbrNId}
         node_vec = []
         node_id = NI.GetId()
-        features[node_id, 0] = NI.GetInDeg() if in_nodes else NI.GetOutDeg()
+        features[node_id, 0] = deg_fns[direction]() #NI.GetDeg() #if in_nodes else NI.GetOutDeg()
         node_vec.append(node_id)
-        deg = NI.GetInDeg() if in_nodes else NI.GetOutDeg()
+        deg = deg_fns[direction]() #NI.GetDeg() #NI.GetInDeg() if in_nodes else NI.GetOutDeg()
         for i in range(deg):
-            neighbor_id = NI.GetInNId(i) if in_nodes else NI.GetOutNId(i)
+            neighbor_id = neighbor_fns[direction](i) #NI.GetNbrNId(i) #NI.GetInNId(i) if in_nodes else NI.GetOutNId(i)
             if not neighbor_id in node_vec:
                 node_vec.append(neighbor_id)
         NIdV = snap.TIntV()
@@ -52,19 +56,22 @@ def do_similarity_stuff(genre, comparison_chord, in_nodes, multi):
         x = features.shape[1]
         new_features = np.zeros((features.shape[0], x*3))
         for NI in G.Nodes():
+            deg_fns = {'in': NI.GetInDeg, 'out': NI.GetOutDeg, 'both': NI.GetDeg}
+            neighbor_fns = {'in': NI.GetInNId, 'out': NI.GetOutNId, 'both': NI.GetNbrNId}
+
             node_id = NI.GetId()
 
             new_features[node_id,:x] = features[node_id]
 
             neighbor_sum = np.zeros_like(features[node_id])
 
-            deg = NI.GetInDeg() if in_nodes else NI.GetOutDeg()
+            deg = deg_fns[direction]() #NI.GetDeg() #NI.GetInDeg() if in_nodes else NI.GetOutDeg()
 
             if deg == 0:
                 continue
 
             for neighbor_i in range(deg):
-                neighbor_id = NI.GetInNId(neighbor_i) if in_nodes else NI.GetOutNId(neighbor_i)
+                neighbor_id = neighbor_fns[direction](neighbor_i) #NI.GetNbrNId(neighbor_i) #NI.GetInNId(neighbor_i) if in_nodes else NI.GetOutNId(neighbor_i)
 
                 neighbor_sum += features[neighbor_id]
             
@@ -107,9 +114,9 @@ def do_similarity_stuff(genre, comparison_chord, in_nodes, multi):
     plt.savefig(genre+'-sim-to-'+comparison_chord)
     plt.close()
 
-do_similarity_stuff('rock', 'C', in_nodes=True, multi=True)
+do_similarity_stuff('rock', 'Am', direction='both', multi=True)
 
-do_similarity_stuff('jazz', 'Cmaj7', in_nodes=True, multi=True)
+do_similarity_stuff('jazz', 'Am7', direction='both', multi=True)
 
 
 
