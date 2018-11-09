@@ -92,6 +92,7 @@ def read_data():
 
             assert(key != None and capo != None)
 
+
             chord1 = parse_chord(tokens[0], key, capo)
             chord2 = parse_chord(tokens[1], key, capo)
 
@@ -104,6 +105,7 @@ def read_data():
             if chord1 != chord2:
                 edges.append((chord1, chord2))
                 song_edges.append((chord1, chord2))
+
         edges_by_song.append(song_edges)
         chord_set_by_song.append(song_chords)
 
@@ -136,11 +138,10 @@ if __name__=='__main__':
     # save graphs by song
     for i in range(len(chord_set_by_song)):
         G = snap.PNEANet.New()
-        chords = chord_set_by_song[i]
+        chords = chords_dict #chord_set_by_song[i]
         edges = edges_by_song[i]
         for id,c in enumerate(chord_set):
             G.AddNode(id)
         for edge in edges:
             G.AddEdge(chords_dict[edge[0]], chords_dict[edge[1]])
         snap.SaveEdgeList(G, "../data/song_graphs/rock_graphs/" + str(i) + ".txt", "Save as tab-separated list of edges")
-

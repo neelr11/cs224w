@@ -80,8 +80,8 @@ def do_similarity_stuff(genre, comparison_chord, direction, multi):
 
         features = new_features
 
-    print features
-    print features.shape
+    # print features
+    # print features.shape
 
     def get_similarities(features, index):
         x = features[index]
@@ -101,22 +101,29 @@ def do_similarity_stuff(genre, comparison_chord, direction, multi):
     similarities = get_similarities(features, chord_to_id[comparison_chord])
 
     chord_sims = zip([id_to_chord[id] for id in np.argsort(similarities)[::-1]], np.sort(similarities)[::-1])
-    for chord, sim in chord_sims:
-        print '%-20s%.10f' % (chord, sim)
+    print 'comparison chord: ', comparison_chord
+    for chord, sim in chord_sims[1:6]:
+        # print '%-10s%.5f' % (chord, sim)
+        print chord
 
     most_similar_nodes = np.argsort(similarities)[::-1]
-    # print [id_to_chord[id] for id in most_similar_nodes]
+    # print comparison_chord
+    # print [id_to_chord[id] for id in most_similar_nodes[:5]]
 
-    plt.hist(similarities, bins=20)
-    plt.xlabel('cosine similarity')
-    plt.ylabel('number of nodes')
-    plt.title('cosine similarity to ' + comparison_chord+ ' (genre: ' + genre + ', ')
-    plt.savefig(genre+'-sim-to-'+comparison_chord)
-    plt.close()
+    # plt.hist(similarities, bins=20)
+    # plt.xlabel('cosine similarity')
+    # plt.ylabel('number of nodes')
+    # plt.title('cosine similarity to ' + comparison_chord+ ' (genre: ' + genre + ', ')
+    # plt.savefig(genre+'-sim-to-'+comparison_chord)
+    # plt.close()
 
-do_similarity_stuff('rock', 'Am', direction='both', multi=True)
+print 'rock'
+for chord in ['C', 'G', 'F', 'Am', 'Dm', 'D', 'Bb', 'E', 'A', 'Em']:
+    do_similarity_stuff('rock', chord, direction='both', multi=True)
 
-do_similarity_stuff('jazz', 'Am7', direction='both', multi=True)
+print 'jazz'
+for chord in ['Dm7', 'G7', 'C', 'Am7', 'Cmaj7', 'E7', 'A7', 'Am', 'C7']:
+    do_similarity_stuff('jazz', chord, direction='both', multi=True)
 
 
 

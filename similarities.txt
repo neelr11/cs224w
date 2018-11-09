@@ -1,0 +1,39 @@
+rock
+comparison chord:  C
+Am
+C6
+D7
+Em
+C7
+comparison chord:  G
+F
+G7
+Am7
+Dm7
+D
+comparison chord:  Am
+Em
+D7
+Dm
+Fadd9
+D
+
+jazz
+comparison chord:  C
+Dm7
+Cmaj7
+C6
+Dm7.5-
+Dm
+comparison chord:  G7
+Ebdim7
+G9-
+A9-
+G9
+A7
+comparison chord:  Am7
+A7
+Em
+F
+A9-
+F6

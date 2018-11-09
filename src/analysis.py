@@ -74,24 +74,22 @@ def plot_degree_distribution(G, chords_dict, genre):
 
     y = np.sort(degs)[::-1][:LIMIT]
 
-    plt.bar(range(LIMIT), y)
-    plt.xticks(range(LIMIT), x_labels)
-    plt.xlabel('Chord')
-    plt.ylabel('In-degree')
-    plt.title('Most common chords in ' + genre + ' music')
-    plt.savefig('../figures/common-'+genre+'-chords')
-    plt.close()
+    # plt.bar(range(LIMIT), y)
+    # plt.xticks(range(LIMIT), x_labels)
+    # plt.xlabel('Chord')
+    # plt.ylabel('In-degree')
+    # plt.title('Most common chords in ' + genre + ' music')
+    # plt.savefig('../figures/common-'+genre+'-chords')
+    # plt.close()
 
-    plt.scatter(in_degrees, num_nodes)
+    plt.scatter(in_degrees, num_nodes, label=genre)
     plt.xscale('log')
     plt.yscale('log')
     axes = plt.gca()
     axes.set_xlim([min(in_degrees), max(in_degrees)])
-    plt.title('Distribution of in-degrees in ' + genre + ' network')
     plt.ylabel('Number of nodes')
     plt.xlabel('In-degree')
-    plt.savefig('../figures/deg-dist-'+genre)
-    plt.close()
+    plt.legend()
 
 
 def main(genre):
@@ -99,8 +97,15 @@ def main(genre):
     get_basic_stats(G_Multi)
     get_communities(G_Undirected, dict)
     get_page_rank(G_Multi, dict)
-    plot_degree_distribution(G_Multi, dict, genre)
-    return G_Multi, G_Directed, G_Undirected, dict
+
+    plt.title('Distribution of in-degrees in genre networks')
+    G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('jazz')
+    plot_degree_distribution(G_Multi, dict, 'jazz')
+
+    G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('rock')
+    plot_degree_distribution(G_Multi, dict, 'rock')
+    plt.savefig('../figures/deg-dists')
+    plt.close()
 
 if __name__ == '__main__':
     main(sys.argv[1])
