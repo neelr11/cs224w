@@ -1,0 +1,21 @@
+# Directed graph: generated_songs/generated_jazz_song_6.txt 
+# Nodes: 14 Edges: 18
+# FromNodeId	ToNodeId
+105	35
+105	133
+105	178
+133	188
+133	207
+188	57
+188	170
+170	187
+187	198
+198	105
+35	133
+207	105
+178	108
+108	188
+108	210
+57	154
+154	38
+38	108

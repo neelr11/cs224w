@@ -100,6 +100,7 @@ def main(genre):
     get_communities(G_Undirected, dict)
     get_page_rank(G_Multi, dict)
     plot_degree_distribution(G_Multi, dict, genre)
+    return G_Multi, G_Directed, G_Undirected, dict
 
 if __name__ == '__main__':
     main(sys.argv[1])
