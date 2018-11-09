@@ -25,9 +25,13 @@ def get_communities(G_Undir, chords_dict):
     CmtyV = snap.TCnComV()
     modularity = snap.CommunityCNM(G_Undir, CmtyV)
     for Cmty in CmtyV:
-        print "Community: "
+        print "Community: size", Cmty.Len()
+        i = 0
         for NI in Cmty:
             print chords_dict[NI]
+            i += 1
+            if i == 5:
+                break
         print ""
         print ""
     print "The modularity of the network is %f" % modularity
@@ -96,16 +100,16 @@ def main(genre):
     G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs(genre)
     get_basic_stats(G_Multi)
     get_communities(G_Undirected, dict)
-    get_page_rank(G_Multi, dict)
+    # get_page_rank(G_Multi, dict)
 
-    plt.title('Distribution of in-degrees in genre networks')
-    G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('jazz')
-    plot_degree_distribution(G_Multi, dict, 'jazz')
+    # plt.title('Distribution of in-degrees in genre networks')
+    # G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('jazz')
+    # plot_degree_distribution(G_Multi, dict, 'jazz')
 
-    G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('rock')
-    plot_degree_distribution(G_Multi, dict, 'rock')
-    plt.savefig('../figures/deg-dists')
-    plt.close()
+    # G_Multi, G_Directed, G_Undirected, dict = load_genre_graphs('rock')
+    # plot_degree_distribution(G_Multi, dict, 'rock')
+    # plt.savefig('../figures/deg-dists')
+    # plt.close()
 
 if __name__ == '__main__':
     main(sys.argv[1])
