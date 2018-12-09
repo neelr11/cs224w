@@ -173,5 +173,5 @@ def main(type):
             index += 1
 
 if __name__ == "__main__":
-    for type in ["node2vec"]:
+    for type in ["random", "smart", "node2vec"]:
         main(type)
