@@ -120,10 +120,14 @@ def main(Random=False):
         if (Random == True):
             for i in range(ITERATIONS):
                 fname, chord_progression = random_walk_generation(G_Multi, i, id_to_chord, genre)
+                while len(chord_progression) < MAX_SONG_LENGTH * 0.8:
+                    fname, chord_progression = random_walk_generation(G_Multi, i, id_to_chord, genre)
                 generated_songs.append(chord_progression)
         else:
             for i in range(ITERATIONS):
                 fname, chord_progression = smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i)
+                while len(chord_progression) < MAX_SONG_LENGTH * 0.8:
+                    fname, chord_progression = smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i)
                 generated_songs.append(chord_progression)
 
         #Save generated song
