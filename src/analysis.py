@@ -19,18 +19,19 @@ def get_basic_stats(G):
     print 'Density', float(2*num_edges)/(num_nodes*(num_nodes-1))
 
 def get_communities(G_Undir, chords_dict):
-    print("************")
-    print("Communities")
+#    print("************")
+#    print("Communities")
     snap.DelSelfEdges(G_Undir)
     CmtyV = snap.TCnComV()
     modularity = snap.CommunityCNM(G_Undir, CmtyV)
-    for Cmty in CmtyV:
-        print "Community: "
-        for NI in Cmty:
-            print chords_dict[NI]
-        print ""
-        print ""
-    print "The modularity of the network is %f" % modularity
+#    for Cmty in CmtyV:
+        #print "Community: "
+#        for NI in Cmty:
+        #    print chords_dict[NI]
+#        print ""
+#        print ""
+#    print "The modularity of the network is %f" % modularity
+    return CmtyV
 
 
 def get_page_rank(G, chords_dict):
