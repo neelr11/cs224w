@@ -5,11 +5,11 @@ import os
 
 with open('chords_dict_jazz.txt', 'r') as file:
      dict = (json.load(file))
-     chords_dict_rock = {v: k for k, v in dict.iteritems()}
+     chords_dict_jazz = {v: k for k, v in dict.iteritems()}
 
 with open('chords_dict_rock.txt', 'r') as file:
      dict = (json.load(file))
-     chords_dict_jazz = {v: k for k, v in dict.iteritems()}
+     chords_dict_rock = {v: k for k, v in dict.iteritems()}
 
 # Returns array of directed graphs (for motif analysis need directed)
 def load_song_graphs(graph):

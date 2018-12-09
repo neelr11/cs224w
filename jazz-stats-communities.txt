@@ -1,0 +1,54 @@
+************
+Basic stats
+Num Nodes 241
+Num Edges 6520
+Clustering Coefficient 0.064171
+Density 0.225449515906
+************
+Communities
+Community: size 55
+Cmaj7
+Dm7
+Eb7
+Am7.9
+D7
+
+
+Community: size 60
+Em7
+Am
+C7
+Fmaj7
+Gbdim7
+
+
+Community: size 55
+Ebdim7
+G7
+C6
+C
+D9
+
+
+Community: size 60
+Bb13
+Am7.5+
+Am7
+A7
+Bm7
+
+
+Community: size 2
+Gm7.9
+Gb7.5-.9+
+
+
+Community: size 9
+G
+Abdim
+A13
+Ab13
+G13
+
+
+The modularity of the network is 0.257262
