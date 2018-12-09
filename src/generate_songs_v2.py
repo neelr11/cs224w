@@ -64,36 +64,36 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
     while len(chord_progression) < MAX_SONG_LENGTH:
         visited.add(nodeID)
         chord_progression.append(id_to_chord[nodeID])
+        neighbors = set([node.GetNbrNId(x) for x in xrange(node.GetOutDeg())])
         rand = random.random()
+        probs = []
 
         #With probability X stay within cluster
         if rand < OUT_THRESHOLD:
-            probs = []
-            for x in clusters[cluster_index]:
-                probs.extend([x] * id_to_outdegree[x])
-            dstID = random.choice(probs)
-
+            possible_next = set([x for x in clusters[cluster_index]]).intersection(set(neighbors))
         else:
-            neighbors = set([node.GetNbrNId(x) for x in xrange(node.GetOutDeg())])
-            possible_next = [x for x in clusters[cluster_index]]
-            possible_next.extend(visited.union(neighbors))
-            probs = []
-            for x in possible_next:
-                probs.extend([x] * id_to_outdegree[x])
-            dstID = random.choice(probs)
+            possible_next = (set([x for x in clusters[cluster_index]]).intersection(set(neighbors))).union(visited)
+        if len(possible_next) == 0:
+            possible_next = possible_next.union(visited)
 
-            #Update current cluster index
-            if dstID not in clusters[cluster_index]:
-                cluster_index = [i for i, x in enumerate(clusters) if dstID in x][0]
+        for x in possible_next:
+            probs.extend([x] * id_to_outdegree[x])
+        if len(probs) == 0:
+            break
+        dstID = random.choice(probs)
 
-            #if edge dst isn't a node in G_Directed_i, add it
-            #if not G_Directed_i.IsNode(dstID):
-            #    G_Directed_i.AddNode(dstID)
+        #Update current cluster index
+        if dstID not in clusters[cluster_index]:
+            cluster_index = [i for i, x in enumerate(clusters) if dstID in x][0]
 
-        #    G_Directed_i.AddEdge(nodeID, dstID)
-            node = G_Multi.GetNI(dstID)
-            #Update node to current node
-            nodeID = dstID
+        #if edge dst isn't a node in G_Directed_i, add it
+        #if not G_Directed_i.IsNode(dstID):
+        #    G_Directed_i.AddNode(dstID)
+
+    #    G_Directed_i.AddEdge(nodeID, dstID)
+        node = G_Multi.GetNI(dstID)
+        #Update node to current node
+        nodeID = dstID
 
 
     #add last chord to list
