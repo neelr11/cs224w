@@ -42,7 +42,7 @@ def random_walk_generation(G_Multi, i, id_to_chord, genre):
 
 
 def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
-    clusters = analysis.get_communities(G_Undirected, id_to_chord) #List of sers of node IDs
+    clusters = analysis.get_communities(G_Undirected, id_to_chord, print=False) #List of sers of node IDs
     id_to_outdegree = {node.GetId() : node.GetOutDeg() for node in G_Multi.Nodes()}
     visited = set()
     chord_progression = []
