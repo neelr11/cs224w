@@ -4,6 +4,7 @@ import analysis
 import snap
 import numpy as np
 import random
+from collections import defaultdict
 
 ITERATIONS = 100
 OUT_THRESHOLD = 0.7
@@ -42,9 +43,10 @@ def random_walk_generation(G_Multi, i, id_to_chord, genre):
 
 def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
     clusters = analysis.get_communities(G_Undirected, id_to_chord) #List of sers of node IDs
+    id_to_outdegree = {node.GetId() : node.GetOutDeg() for node in G_Multi.Nodes()}
+    print id_to_outdegree
     visited = set()
     chord_progression = []
-    length = 0
 
     #instantiate song graph
     #G_Directed_i = snap.TNGraph.New() #song graph i
@@ -52,25 +54,33 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
     #Get node in largest cluster
     #1. Get index of largest element of clusters
     cluster_index = np.argmax([len(x) for x in clusters])
+    # Choose randomly from this set
     possible_next = clusters[cluster_index]
-    # Choose randomly from this
     nodeID = random.choice(clusters[cluster_index])
+
     #G_Directed_i.AddNode(nodeID)
     node = G_Multi.GetNI(nodeID)
+
     #while not at last node in the song
-    while length < MAX_SONG_LENGTH:
+    while len(chord_progression) < MAX_SONG_LENGTH:
         visited.add(nodeID)
         chord_progression.append(id_to_chord[nodeID])
         rand = random.random()
 
         #With probability X stay within cluster
         if rand < OUT_THRESHOLD:
-            dstID = random.choice(clusters[cluster_index])
+            probs = []
+            for x in clusters[cluster_index]:
+                probs.extend([x * id_to_outdegree[x]])
+            dstID = random.choice(probs)
 
         else:
             neighbors = set([node.GetNbrNId(x) for x in xrange(node.GetOutDeg())])
             possible_next = [x for x in clusters[cluster_index]]
             possible_next.extend(visited.union(neighbors))
+            probs = []
+            for x in possible_next:
+                probs.extend([x * id_to_outdegree[x]])
             dstID = random.choice(possible_next)
 
             #Update current cluster index
@@ -83,11 +93,8 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
 
         #    G_Directed_i.AddEdge(nodeID, dstID)
             node = G_Multi.GetNI(dstID)
-            length += 1
-
-        #Update node to current node
-        nodeID = dstID
-        node = G_Multi.GetNI(nodeID)
+            #Update node to current node
+            nodeID = dstID
 
 
     #add last chord to list
