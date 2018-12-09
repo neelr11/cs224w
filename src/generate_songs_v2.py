@@ -44,7 +44,6 @@ def random_walk_generation(G_Multi, i, id_to_chord, genre):
 def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
     clusters = analysis.get_communities(G_Undirected, id_to_chord) #List of sers of node IDs
     id_to_outdegree = {node.GetId() : node.GetOutDeg() for node in G_Multi.Nodes()}
-    print id_to_outdegree
     visited = set()
     chord_progression = []
 
@@ -71,7 +70,7 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
         if rand < OUT_THRESHOLD:
             probs = []
             for x in clusters[cluster_index]:
-                probs.extend([x * id_to_outdegree[x]])
+                probs.extend([x] * id_to_outdegree[x])
             dstID = random.choice(probs)
 
         else:
@@ -80,8 +79,8 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
             possible_next.extend(visited.union(neighbors))
             probs = []
             for x in possible_next:
-                probs.extend([x * id_to_outdegree[x]])
-            dstID = random.choice(possible_next)
+                probs.extend([x] * id_to_outdegree[x])
+            dstID = random.choice(probs)
 
             #Update current cluster index
             if dstID not in clusters[cluster_index]:
