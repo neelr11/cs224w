@@ -134,9 +134,9 @@ def node2vec(G_Multi, G_nx, id_to_chord, genre, i):
 
 
     if i is not "":
-        file_name = "generated_songs/smart_generated_" + genre + "_song_" + str(i+1) + ".txt"
+        file_name = "generated_songs/biased_generated_" + genre + "_song_" + str(i+1) + ".txt"
     else:
-        file_name =  "generated_songs/smart_generated_" + genre + "_song.txt"
+        file_name =  "generated_songs/biased_generated_" + genre + "_song.txt"
 
     file = open(file_name, "w")
     for index, nodeID in enumerate(walk):
