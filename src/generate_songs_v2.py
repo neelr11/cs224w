@@ -42,7 +42,7 @@ def random_walk_generation(G_Multi, i, id_to_chord, genre):
 
 
 def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
-    clusters = analysis.get_communities(G_Undirected, id_to_chord, print=False) #List of sers of node IDs
+    clusters = analysis.get_communities(G_Undirected, id_to_chord, False) #List of clusers of node IDs
     id_to_outdegree = {node.GetId() : node.GetOutDeg() for node in G_Multi.Nodes()}
     visited = set()
     chord_progression = []
@@ -72,7 +72,7 @@ def smart_walk_generation(G_Undirected, G_Multi, id_to_chord, genre, i = ""):
         if rand < OUT_THRESHOLD:
             possible_next = set([x for x in clusters[cluster_index]]).intersection(set(neighbors))
         else:
-            possible_next = (set([x for x in clusters[cluster_index]]).intersection(set(neighbors))).union(visited)
+            possible_next = set(neighbors).union(visited)
         if len(possible_next) == 0:
             possible_next = possible_next.union(visited)
 
