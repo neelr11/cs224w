@@ -1,0 +1,19 @@
+/*****
+motif 87
+*****/
+
+digraph G {
+  graph [splines=false overlap=false]
+  node  [shape=ellipse, width=0.3, height=0.3, label=""]
+  0 ;
+  1 ;
+  2 ;
+  3 ;
+  0 -> 1;
+  0 -> 2;
+  1 -> 0;
+  1 -> 2;
+  2 -> 0;
+  3 -> 2;
+  label = "\nmotif 87\n";  fontsize=24;
+}

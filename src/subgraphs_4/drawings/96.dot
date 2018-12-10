@@ -1,0 +1,19 @@
+/*****
+motif 96
+*****/
+
+digraph G {
+  graph [splines=false overlap=false]
+  node  [shape=ellipse, width=0.3, height=0.3, label=""]
+  0 ;
+  1 ;
+  2 ;
+  3 ;
+  0 -> 1;
+  0 -> 2;
+  1 -> 0;
+  1 -> 3;
+  2 -> 1;
+  2 -> 3;
+  label = "\nmotif 96\n";  fontsize=24;
+}

@@ -1,8 +1,6 @@
 import json
 import snap
 from matplotlib import pyplot as plt
-from itertools import permutations
-import numpy as np
 import sys
 from load_genre_graphs import load_genre_graphs
 
@@ -26,12 +24,8 @@ def get_communities(G_Undir, chords_dict):
     modularity = snap.CommunityCNM(G_Undir, CmtyV)
     for Cmty in CmtyV:
         print "Community: size", Cmty.Len()
-        i = 0
         for NI in Cmty:
             print chords_dict[NI]
-            i += 1
-            if i == 5:
-                break
         print ""
         print ""
     print "The modularity of the network is %f" % modularity

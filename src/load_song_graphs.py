@@ -11,7 +11,7 @@ with open('chords_dict_rock.txt', 'r') as file:
      dict = (json.load(file))
      chords_dict_rock = {v: k for k, v in dict.iteritems()}
 
-# Returns array of directed graphs (for motif analysis need directed)
+# Returns array of directed (****should these be multi?***) graphs (for motif analysis need directed)
 def load_song_graphs(graph):
     if graph == "rock":
         path = '../data/song_graphs/rock_graphs/'

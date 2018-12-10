@@ -19,7 +19,7 @@ def load_4_subgraphs():
     The list is in the same order as the figure in the HW pdf, but it is
     zero-indexed
     '''
-    return [snap.LoadEdgeList(snap.PNGraph, "./subgraphs_4/{}.txt".format(i), 0, 1) for i in range(7)]
+    return [snap.LoadEdgeList(snap.PNGraph, "./subgraphs_4/{}.txt".format(i), 0, 1) for i in range(198)]
 
 def count_iso_3(G, sg, verbose=False):
     '''
@@ -227,41 +227,117 @@ def gen_config_model_rewire(graph, iterations=8000):
     ##########################################################################
     return config_graph
 
-def count_3_motifs():
+#Is this the right way to do this...check z score sum
+def get_z_scores(motifs_real, motifs_sampled, num_motifs):
+    motifs_sampled_by_motif = []
+    for i in range(num_motifs):
+        #Get arrays of the columns so that we can compute mean/std across samples of particular motifs
+
+        #fix this # HACK:
+        m = motifs_sampled[:,i]
+        if sum(m) == 0: m[0] = 1
+        if len(set(m)) == 1: m[0] += 1
+
+        motifs_sampled_by_motif.append(m)
+    return [(motifs_real[i] - np.mean(motifs_sampled_by_motif[i]))/(np.std(motifs_sampled_by_motif[i])) for i in range(num_motifs)]
+
+
+def count_3_motifs(genre, num_samples=10):
     global motif_counts
     total_real_counts = [0] * len(directed_3)
-    total_config_counts = [0] * len(directed_3)
+    total_config_counts_matrix = np.zeros((num_samples, len(directed_3)))
 
-    for G_Directed in graphs:
+    num_songs_motifs_appear_in = [0] * len(directed_3)
+
+    feature_vec = np.empty((len(graphs), len(directed_3)))
+
+    for i in range(len(graphs)):
+        G_Directed = graphs[i]
         enumerate_subgraph(G_Directed, 0, 3, verbose=False)
+        feature_vec[i] = motif_counts
+        total_real_counts = np.add(total_real_counts, motif_counts)
+        for i in range (len(motif_counts)):
+            if motif_counts[i] > 0: num_songs_motifs_appear_in[i] += 1
+
+    np.savetxt(genre + '_motif_feature_vec_3.txt', feature_vec)
+
+    for i in range(num_samples):
+        graphs_reloaded, dict = load_song_graphs(genre)
+        for G_Directed in graphs_reloaded:
+            config_model = gen_config_model_rewire(G_Directed)
+            motif_counts = [0] * len(directed_3)
+            enumerate_subgraph(config_model, 0, 3, verbose=False)
+            total_config_counts_matrix[i,:] = np.add(total_config_counts_matrix[i,:], motif_counts)
+
+    num_songs_tup = [(num_songs, float(num_songs)/len(graphs)) for num_songs in num_songs_motifs_appear_in]
+
+    print 'Total real counts', total_real_counts
+    print 'Total Config Counts', total_config_counts_matrix
+    print 'Num songs motifs appear in', num_songs_tup
+    z_scores = get_z_scores(total_real_counts, total_config_counts_matrix, len(directed_3))
+    print 'Z scores', z_scores
+    np.savetxt(genre+'_3motif_zscores.txt', z_scores)
+
+def count_4_motifs(genre, num_samples=10):
+    global motif_counts
+    total_real_counts = [0] * len(directed_4)
+    total_config_counts_matrix = np.zeros((num_samples, len(directed_4)))
+    num_songs_motifs_appear_in = [0] * len(directed_4)
+
+    feature_vec = np.empty((len(graphs), len(directed_4)))
+
+    for i in range(len(graphs)):
+        G_Directed = graphs[i]
+        enumerate_subgraph(G_Directed, 0, 4)
+        feature_vec[i] = motif_counts
         total_real_counts = np.add(total_real_counts, motif_counts)
         #print motif_counts
-        config_model = gen_config_model_rewire(G_Directed)
-        enumerate_subgraph(config_model, 0, 3, verbose=False)
-        #print motif_counts
-        total_config_counts = np.add(total_config_counts, motif_counts)
-    print total_real_counts
-    #print total_config_counts
+        for i in range (len(motif_counts)):
+            if motif_counts[i] > 0: num_songs_motifs_appear_in[i] += 1
 
-def count_4_motifs():
-    global motif_counts
-    enumerate_subgraph(G_Directed, 0, 4, verbose=True)
-    print motif_counts
-    config_model = gen_config_model_rewire(G_Directed)
-    motif_counts = [0] * len(directed_4)
-    enumerate_subgraph(config_model, 0, 4, verbose=True)
-    print motif_counts
+    np.savetxt(genre + '_motif_feature_vec_4.txt', feature_vec)
+
+
+    for i in range(num_samples):
+        graphs_reloaded, dict = load_song_graphs(genre)
+        for G_Directed in graphs_reloaded:
+            config_model = gen_config_model_rewire(G_Directed)
+            motif_counts = [0] * len(directed_4)
+            enumerate_subgraph(config_model, 0, 4, verbose=False)
+            total_config_counts_matrix[i,:] = np.add(total_config_counts_matrix[i,:], motif_counts)
+
+    num_songs_tup = [(num_songs, float(num_songs)/len(graphs)) for num_songs in num_songs_motifs_appear_in]
+
+
+    print 'Total Real Counts', total_real_counts
+    print 'Total Config Counts', total_config_counts_matrix
+    print 'Num songs motifs appear in', num_songs_tup
+
+    z_scores = get_z_scores(total_real_counts, total_config_counts_matrix, len(directed_4))
+    print 'Z scores', z_scores
+    np.savetxt(genre+'_4motif_zscores.txt', z_scores)
 
 
 # Motif ecounts only work with G_Directed
+print("********")
+print("Motifs for jazz")
 directed_3 = load_3_subgraphs()
 directed_4 = load_4_subgraphs()
 graphs, dict = load_song_graphs("jazz")
 motif_counts = []
-count_3_motifs()
+print("3 motifs")
+graphs, dict = load_song_graphs("jazz")
+count_3_motifs("jazz")
+print("4 motifs")
+count_4_motifs("jazz")
 
 print ""
-
+print("********")
+print("Motifs for rock")
 graphs, dict = load_song_graphs("rock")
 motif_counts = []
-count_3_motifs()
+print("3 motifs")
+count_3_motifs("rock")
+graphs, dict = load_song_graphs("rock")
+print("4 motifs")
+count_4_motifs("rock")
