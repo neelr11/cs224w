@@ -142,9 +142,9 @@ def node2vec(G_Multi, G_nx, id_to_chord, genre, i):
     for index, nodeID in enumerate(walk):
         chord_progression.append(id_to_chord[nodeID])
         if index is not 0:
-            file.write(id_to_chord[nodeID] + "\n")
+            file.write(str(nodeID) + "\n")
         if index is not len(walk) - 1:
-            file.write(id_to_chord[nodeID] + " ",)
+            file.write(str(nodeID) + " ",)
 
     file.close()
 
