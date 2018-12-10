@@ -1,0 +1,18 @@
+/*****
+motif 12
+*****/
+
+digraph G {
+  graph [splines=false overlap=false]
+  node  [shape=ellipse, width=0.3, height=0.3, label=""]
+  1 ;
+  0 ;
+  2 ;
+  1 -> 0;
+  1 -> 2;
+  0 -> 1;
+  0 -> 2;
+  2 -> 0;
+  2 -> 1;
+  label = "\nmotif 12\n";  fontsize=24;
+}

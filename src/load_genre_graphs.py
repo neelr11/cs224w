@@ -22,4 +22,6 @@ def load_genre_graphs(graph):
     G_Multi = snap.LoadEdgeList(snap.PNEANet, filename, 0, 1)
     G_Directed = snap.LoadEdgeList(snap.PNGraph, filename, 0, 1)
     G_Undirected = snap.LoadEdgeList(snap.PUNGraph, filename, 0, 1)
-    return G_Multi, G_Directed, G_Undirected, dict
+
+    #return G_Multi, G_Directed, G_Undirected, dict
+    return snap.GetKCore(G_Multi, 3), snap.GetKCore(G_Directed, 3), snap.GetKCore(G_Undirected, 3), dict
